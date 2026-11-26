@@ -1,0 +1,50 @@
+# DESIGN NOTE nq_v3 (written 2026-11-26, BEFORE any non-smoke run)
+Only the local smoke test (T = 2 s, 112 runs, tiny grid) and a few seconds of LS tuning on tuning seeds (see 4) have been run. Do not edit sections 1 to 7 after the first stage run starts; changes go in "Deviations" at the bottom with date and reason. Code constants in `nq_v3.py` and definitions in `analyze_v3.py` are the authority and must match this text.
+
+## 1. What changes against nq_v2 (critic's required fixes)
+1. Environment: `OUT.csv.env.json` is written at every start (appended list): python, ortools, python-sat, numpy, numba versions, CPU model, usable cores, RAM, OS, argv, stage, T, seeds, solvers, LS constants.
+2. Strict budget: every run gets exactly T. The parent kills a child at T + 0.5 s only so the answer can travel through the pipe. Any answer (sat, unsat, bad) with measured t > T, and any solver-reported timeout, is written to the CSV as status `to` with t = T; the raw time is kept in `t_raw`; `killed = 1` marks a kill. The analysis asserts that no late answer remains. Time is measured inside the child from before model building, so encoding/model time counts; instance generation and verification do not.
+3. Tuned compiled local search `ls_nb` (numba `@njit`), all four families: bnq min-conflicts (random conflicted queen, min-conflict column, blocked cell penalty 5, restart every 20000 moves), qwh and qcp row-permutation min-conflicts with incremental column counts and incremental cost (rows stay permutations, random conflicted hole cell, best swap inside its row, restart every 50 N^2 moves), ksat WalkSAT/SKC (noise 0.567, no restarts). Tabu-free. The old Python LS stays as `ls_py` (main10 only, for comparison). Numba kernels run chunks of moves; Python checks the clock between chunks. Kernels are compiled before any child is forked, so compile time is never charged to a run. Every claimed solution goes through the independent verifier (`verify_bnq`, `verify_latin`, `verify_ksat`); a failed check is `bad` and counts as unsolved.
+4. Longer budgets and stages (section 2).
+
+## 2. Stages, seeds, budgets
+Instances are generated from the string seed "family-size-param-seed" (as in v2), so main10 seeds 0 to 9 are the first ten instances of v2 cells. Solver seed: CP-SAT random_seed = instance seed; LS seed = 7919 * seed + 1.
+| stage | T | grid | seeds | solvers | workers |
+|---|---|---|---|---|---|
+| main10 | 10 s | v2 grid: bnq n 50,100,200 x p .80,.84,.86,.88,.90,.92,.94,.96; qwh N 20,30,40 x h .25,.30,.35,.40,.45,.50,.60,.70; qcp N 20,30,40 x f .30,.35,.38,.40,.42,.44,.46,.50; ksat n 150,250,350 x r 3.8,4.0,4.1,4.2,4.26,4.3,4.4,4.6 (96 cells) | 0-9 (10 per cell) | ls_nb, ls_py, cpsat_naive, cpsat_strong, glucose4, cadical195 | 1 each; 4 jobs |
+| long60 | 60 s | bnq n 100,200 x p .84,.88,.92; qwh N 30,40 x h .35,.45,.55; qcp N 30,40 x f .35,.42,.50; ksat n 250,350 x r 4.1,4.26,4.4 (24 cells) | 0-4 (5) | ls_nb, cpsat_strong, cpsat_strong_w4, cadical195 | 1; w4 runs 4 workers and runs alone after all 1-worker runs |
+| long300 | 300 s | largest size only: bnq n=200 p .84,.88,.92; qwh N=40 h .35,.45,.55; qcp N=40 f .35,.42,.50; ksat n=350 r 4.1,4.26,4.4 (12 cells) | 0-2 (3) | same as long60 | same |
+Task order is seed-outermost, so a truncated run leaves balanced cells. CP-SAT with 4 workers (w4) is never run next to other jobs.
+
+## 3. Hypotheses (exact definitions; a "cell" = family x size x param; all verdicts reported, none dropped)
+Cell labels (computed from the stage's own data, all solvers): SAT-side = at least 90% of the cell's instances solved by some solver; UNSAT-side = at least 90% proven UNSAT by some solver; else transition. Complete solvers = cpsat_naive, cpsat_strong, cpsat_strong_w4, glucose4, cadical195 (whichever the stage has). solved = SAT answer within T and verified; decided = solved or UNSAT proof within T. CIs: percentile bootstrap over instances, 10,000 resamples, numpy seed 12345, paired for solver differences; no p-values.
+- **H1** (main10). bnq n=200, p in {.84,.86,.88,.90}: solved(ls_nb) - solved(cpsat_strong), paired 95% CI lower bound >= 0.5 in at least 3 of the 4 cells. Falsified otherwise (v2 rule: two or more cells below). ls_py shown for information.
+- **H2** (main10, on ls_py, v2 continuity). On SAT-side cells of qwh and qcp at N=40, best complete solved - solved(ls_py) >= 0.2 in at least one cell of each family; on ksat n=350 SAT-side cells with r <= 4.2, ls_py solved >= 0.9 at r=4.0. Falsified if either part fails. ls_nb is listed beside it for information; its confirmatory test is H8.
+- **H3** (main10). Cell set = SAT-side and transition cells only (UNSAT-side cells excluded; label computed in the same stage; this is the preregistered set, not "all cells"). Pooled paired difference solved(cpsat_strong) - solved(cpsat_naive): bnq lower CI bound >= 0.1; latin (qwh and qcp pooled) lower CI bound >= 0.1; ksat 95% CI inside (-0.1, 0.1). Falsified if any part fails. (Known from v2 data: latin difference was about -0.03, so the latin part is expected to fail; it is kept as defined.)
+- **H4** (main10). Cells where some complete solver decides >= 20%: ksat n=250, r >= 4.4: decided(cadical195) >= decided(cpsat_strong) + 0.1; bnq n=100 and n=200, p >= .94: decided(cpsat_strong) >= decided(cadical195). Supported if it holds in every such cell, falsified if it fails in any, not evaluable if no such cell.
+- **H5** (main10). For each family at its largest size, s(param) = share of instances solved by some solver. A 0.5 crossing exists only if min s < 0.5 <= max s over the grid; otherwise the family is NOT EVALUABLE, declared in advance. qwh is always SAT by construction: NOT EVALUABLE in advance. Peak = argmax over param of the minimum over complete solvers of PAR2(decision) (PAR2 = time if decided else 2T). If that PAR2 is >= 0.95 * 2T in more than 2 cells (plateau), NOT EVALUABLE. Crossing cell = grid point whose s is closest to 0.5. Family supported if |grid index of peak - grid index of crossing| <= 1 (ksat n=350: peak in {4.2, 4.26, 4.3}). H5 is supported if at least two families are evaluable and all evaluable ones are supported; falsified if any evaluable family fails.
+- **H6** (long60 and long300, evaluated per stage). bnq n=200 cells where ls_nb solves every instance: cpsat_strong_w4 solves < 50%. Falsified if w4 solves >= 50% in two or more such cells.
+- **H7** (main10, exploratory). cadical195 decided >= glucose4 decided in at least 75% of cells (ties count). Sign only.
+- **H8 (new)** (main10 and long60, separate verdicts). Tuned compiled LS closes the Latin-square gap: over SAT-side cells of a family at N in {30, 40}, the share of cells with solved(ls_nb) >= 0.8 * (best complete solved) is >= 0.75. Supported if true for both qwh and qcp; "partial" if for one; falsified if for neither. The 0.8 and 0.75 thresholds are fixed here. long300 has only 3 seeds and is reported descriptively, not tested.
+Cells with fewer than 8 (main10), 4 (long60) completed instances are marked and excluded from tests by `analyze_v3.py` (the harness stops launching new runs on the time limit, seed-outermost). Extra analyses are labelled exploratory.
+
+## 4. LS constants and tuning disclosure
+Fixed constants: NB_NOISE = bnq 0, qwh 0, qcp 0, ksat 0.567; bnq restart 20000 moves; latin restart 50 N^2 moves. Chosen by a short local tuning (noise in {0, .01, .02, .05, .1, .2}; 2 to 3 s per run, 3 runs per setting) on tuning seeds 1000-1002 of qwh N=40 h=.5 and .4, qcp N=30 f=.4 and N=40 f=.42. Noise 0 solved at least as many as any other value; larger noise hurt qwh. These seeds are outside every stage (seeds 0-4 at most 9). Tuning was on a laptop, on a handful of instances only; no stage-grid result was seen. ls_py keeps its v2 constants (noise 0.1 for latin) unchanged.
+
+## 5. Analysis plan (`analyze_v3.py`)
+Inputs: stage CSVs plus their env.json. Outputs: environment table, per-stage cells.csv and tables (fraction solved with median time of solved runs), cell labels, hypotheses.md (H1 to H8 with CIs and verdicts), figures (solved vs parameter per family and size, PAR2 at the largest size, long-stage bars, ls_nb vs ls_py vs complete on qwh/qcp). The script asserts no late answer is left, reports counts of bad/err/killed rows. Consistency check: no instance may get SAT from one solver and UNSAT from another; if it happens, stop and report a bug.
+
+## 6. Compute estimate (4-core Kaggle CPU session, 4 jobs; worst case = every run uses its full T)
+Estimates use v2 mean cost per run (about 3.1 to 5.2 s at T=10) and v2 timeout fractions as a proxy.
+| stage | runs | expected wall | worst-case wall | CPU hours (expected / worst) |
+|---|---|---|---|---|
+| main10 | 5,760 | 1.6 h | 4.0 h | 6.5 / 16.0 |
+| long60 | 360 (1-worker) + 120 (w4) | 0.7 h + 0.9 h = 1.6 h | 1.5 h + 2.0 h = 3.5 h | 2.8 + 3.4 (w4 uses 4 cores) / 6 + 8 |
+| long300 | 108 + 36 (w4) | 1.3 h + 1.9 h = 3.2 h | 2.25 h + 3.0 h = 5.3 h | 5.2 + 7.6 / 9 + 12 |
+main10 + long60: expected 3.2 h, worst 7.5 h, fits one session of <= 10 h (notebook passes --hours 5.5 to main10 and --hours 4 to long60). long300 is a separate optional session (worst 5.3 h). Headroom: `--seeds 20` on main10 appends seeds 10-19 to the same CSV (resumable) if the first session ends early, but that is a change of design and must be logged under Deviations. Kaggle CPUs may be slower than the M2; the worst case is bounded by T, only the share of early finishes changes.
+
+## 7. Known limits stated in advance
+numba ls_nb vs OR-tools/pysat compare a compiled LS against solvers called through Python wrappers; encoding time is inside the budget for all complete solvers, LS preprocessing (CSR build) too. CDCL runs through pysat with pairwise (<= 6) or sequential-counter AMO encodings. 1 vs 4 CP-SAT workers are not core-matched against 1-thread LS or CDCL; w4 is reported as a separate column. Instance generators (Jacobson-Matthews with N^3 moves, forward-checked qcp) are not proven uniform. ksat and bnq UNSAT-side cells are mostly undecided at long N; that is reported, not filled in.
+
+## Deviations
+(none yet)
