@@ -109,7 +109,8 @@ def apply_params(P, txt):
     for part in filter(None, (x.strip() for x in txt.split(";"))):
         k, v = (x.strip() for x in part.split(":", 1))
         val = (v == "true") if v in ("true", "false") else int(v) if v.lstrip("-").isdigit() else getattr(sp.SatParameters, v)
-        setattr(P, k, val)
+        try: setattr(P, k, val)
+        except TypeError: setattr(P, k, type(getattr(P, k))(int(val)))   # pybind enum fields need the enum type, not a plain int
 
 def run_cp(mm, T, seed, workers, t0, read):   # nq_v3.run_cp plus optional parameter text (set only by cpsat_tuned / tuning)
     from ortools.sat.python import cp_model
