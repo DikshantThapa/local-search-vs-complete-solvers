@@ -1,0 +1,82 @@
+{
+ "ext_uf250": {
+  "url": "https://www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/RND3SAT/uf250-1065.tar.gz",
+  "sha256": "ebe9b90d674bfd4d3cc76ed048f144e2728b1758cb8aac157c7ce38bb1d1931d",
+  "files": [
+   "uf250-01",
+   "uf250-010",
+   "uf250-0100",
+   "uf250-011",
+   "uf250-012",
+   "uf250-013",
+   "uf250-014",
+   "uf250-015",
+   "uf250-016",
+   "uf250-017",
+   "uf250-018",
+   "uf250-019",
+   "uf250-02",
+   "uf250-020",
+   "uf250-021",
+   "uf250-022",
+   "uf250-023",
+   "uf250-024",
+   "uf250-025",
+   "uf250-026"
+  ]
+ },
+ "ext_flat150": {
+  "url": "https://www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/GCP/flat150-360.tar.gz",
+  "sha256": "c97a2fac40bfd9a6e379397acb46eb3d74fddc791fafb48b0bd49af5278a9891",
+  "files": [
+   "flat150-1",
+   "flat150-10",
+   "flat150-100",
+   "flat150-11",
+   "flat150-12",
+   "flat150-13",
+   "flat150-14",
+   "flat150-15",
+   "flat150-16",
+   "flat150-17",
+   "flat150-18",
+   "flat150-19",
+   "flat150-2",
+   "flat150-20",
+   "flat150-21",
+   "flat150-22",
+   "flat150-23",
+   "flat150-24",
+   "flat150-25",
+   "flat150-26"
+  ]
+ },
+ "ext_qg": {
+  "url": "https://www.cs.ubc.ca/~hoos/SATLIB/Benchmarks/SAT/QG/QG.tar.gz",
+  "sha256": "6b8153ace76d0c0f042ce061360ebd40cdf67429b1477ffbdac631c2e9cc4207",
+  "files": [
+   "qg1-07",
+   "qg1-08",
+   "qg2-07",
+   "qg2-08",
+   "qg3-08",
+   "qg3-09",
+   "qg4-08",
+   "qg4-09",
+   "qg5-09",
+   "qg5-10",
+   "qg5-11",
+   "qg5-12",
+   "qg5-13",
+   "qg6-09",
+   "qg6-10",
+   "qg6-11",
+   "qg6-12",
+   "qg7-09",
+   "qg7-10",
+   "qg7-11",
+   "qg7-12",
+   "qg7-13"
+  ]
+ }
+}

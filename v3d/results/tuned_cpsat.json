@@ -1,0 +1,273 @@
+{
+ "bnq": {
+  "variant": "default",
+  "params": "",
+  "table": {
+   "default": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "lin0": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "lin2": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "portfolio": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym0": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym2": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "nopresolve": {
+    "solved": 0,
+    "par2_sum": 90.0
+   }
+  }
+ },
+ "qwh": {
+  "variant": "default",
+  "params": "",
+  "table": {
+   "default": {
+    "solved": 5,
+    "par2_sum": 45.54
+   },
+   "lin0": {
+    "solved": 5,
+    "par2_sum": 45.47
+   },
+   "lin2": {
+    "solved": 1,
+    "par2_sum": 81.06
+   },
+   "portfolio": {
+    "solved": 4,
+    "par2_sum": 52.42
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym0": {
+    "solved": 5,
+    "par2_sum": 45.36
+   },
+   "sym2": {
+    "solved": 5,
+    "par2_sum": 45.36
+   },
+   "nopresolve": {
+    "solved": 4,
+    "par2_sum": 56.64
+   }
+  }
+ },
+ "qcp": {
+  "variant": "portfolio",
+  "params": "search_branching: PORTFOLIO_SEARCH",
+  "table": {
+   "default": {
+    "solved": 5,
+    "par2_sum": 49.11
+   },
+   "lin0": {
+    "solved": 5,
+    "par2_sum": 48.94
+   },
+   "lin2": {
+    "solved": 1,
+    "par2_sum": 82.83
+   },
+   "portfolio": {
+    "solved": 7,
+    "par2_sum": 28.86
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym0": {
+    "solved": 5,
+    "par2_sum": 48.93
+   },
+   "sym2": {
+    "solved": 5,
+    "par2_sum": 48.59
+   },
+   "nopresolve": {
+    "solved": 5,
+    "par2_sum": 44.64
+   }
+  }
+ },
+ "ksat": {
+  "variant": "default",
+  "params": "",
+  "table": {
+   "default": {
+    "solved": 4,
+    "par2_sum": 55.67
+   },
+   "lin0": {
+    "solved": 4,
+    "par2_sum": 55.48
+   },
+   "lin2": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "portfolio": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym0": {
+    "solved": 4,
+    "par2_sum": 55.49
+   },
+   "sym2": {
+    "solved": 4,
+    "par2_sum": 55.66
+   },
+   "nopresolve": {
+    "solved": 4,
+    "par2_sum": 55.76
+   }
+  }
+ },
+ "ksat5": {
+  "variant": "default",
+  "params": "",
+  "table": {
+   "default": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "lin0": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "lin2": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "portfolio": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym0": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "sym2": {
+    "solved": 0,
+    "par2_sum": 90.0
+   },
+   "nopresolve": {
+    "solved": 0,
+    "par2_sum": 90.0
+   }
+  }
+ },
+ "_meta": {
+  "T_tune": 5.0,
+  "seeds": [
+   2000,
+   2001,
+   2002
+  ],
+  "cells": {
+   "bnq": [
+    [
+     100,
+     0.92
+    ],
+    [
+     200,
+     0.88
+    ],
+    [
+     200,
+     0.94
+    ]
+   ],
+   "qwh": [
+    [
+     30,
+     0.4
+    ],
+    [
+     40,
+     0.35
+    ],
+    [
+     40,
+     0.45
+    ]
+   ],
+   "qcp": [
+    [
+     30,
+     0.42
+    ],
+    [
+     40,
+     0.42
+    ],
+    [
+     40,
+     0.46
+    ]
+   ],
+   "ksat": [
+    [
+     250,
+     4.2
+    ],
+    [
+     350,
+     4.26
+    ],
+    [
+     350,
+     4.3
+    ]
+   ],
+   "ksat5": [
+    [
+     150,
+     21.0
+    ],
+    [
+     200,
+     20.5
+    ],
+    [
+     200,
+     21.5
+    ]
+   ]
+  },
+  "runs_per_family": 72
+ }
+}
