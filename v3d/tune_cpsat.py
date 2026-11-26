@@ -28,10 +28,9 @@ def run(jobs, nproc):
 
 def validate_variants():
     from ortools.sat.python import cp_model
-    from google.protobuf import text_format
     ok = {}
     for k, v in d.CP_VARIANTS.items():
-        try: text_format.Merge(v, cp_model.CpSolver().parameters); ok[k] = v
+        try: d.apply_params(cp_model.CpSolver().parameters, v); ok[k] = v
         except Exception as e: print("variant dropped (not accepted by this ortools):", k, e, flush=True)
     return ok
 

@@ -103,11 +103,18 @@ CP_VARIANTS = {"default": "", "lin0": "linearization_level: 0", "lin2": "lineari
                "sym0": "symmetry_level: 0", "sym2": "symmetry_level: 2", "nopresolve": "cp_model_presolve: false"}
 ACTIVE = {}
 
+def apply_params(P, txt):
+    """set CP-SAT parameters from 'name: value' text by attribute assignment (protobuf text_format is not available on newer ortools wrappers)"""
+    from ortools.sat import sat_parameters_pb2 as sp
+    for part in filter(None, (x.strip() for x in txt.split(";"))):
+        k, v = (x.strip() for x in part.split(":", 1))
+        val = (v == "true") if v in ("true", "false") else int(v) if v.lstrip("-").isdigit() else getattr(sp.SatParameters, v)
+        setattr(P, k, val)
+
 def run_cp(mm, T, seed, workers, t0, read):   # nq_v3.run_cp plus optional parameter text (set only by cpsat_tuned / tuning)
     from ortools.sat.python import cp_model
-    from google.protobuf import text_format
     sv = cp_model.CpSolver(); P = sv.parameters; P.num_workers = workers; P.random_seed = seed
-    if ACTIVE.get("txt"): text_format.Merge(ACTIVE["txt"], P)
+    if ACTIVE.get("txt"): apply_params(P, ACTIVE["txt"])
     P.max_time_in_seconds = max(0.01, T - (time.monotonic() - t0)); st = sv.Solve(mm)
     if st in (cp_model.OPTIMAL, cp_model.FEASIBLE): return "sat", read(sv)
     return ("unsat" if st == cp_model.INFEASIBLE else "to"), None
