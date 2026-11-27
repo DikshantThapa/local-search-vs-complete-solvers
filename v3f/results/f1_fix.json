@@ -1,0 +1,27 @@
+{
+ "fix": "same_call",
+ "thr": 0.1,
+ "baseline_median": 0.0015500000000000002,
+ "baseline_reproduced": false,
+ "medians": {
+  "base_none/parent": 1.3908,
+  "base_none/fork": 0.0016,
+  "base_none/spawn": 1.3668,
+  "warm_tiny/parent": 0.0013,
+  "warm_tiny/fork": 0.0018,
+  "warm_real/parent": 0.0014,
+  "warm_real/fork": 0.0016,
+  "warm_same/parent": 0.0014,
+  "warm_same/fork": 0.0016,
+  "sig/parent": 0.0637,
+  "sig/fork": 0.0016,
+  "sig/spawn": 0.065,
+  "cache_cold/parent": 0.0014,
+  "cache_cold/fork": 0.0016,
+  "cache_warm/parent": 0.0014,
+  "cache_warm/fork": 0.0015,
+  "cache_warm/spawn": 0.6517
+ },
+ "rule": "first of same_call, sig, cache with fork-child median first-call sum <= 0.10 s",
+ "numba_cache_dir_for_cache_fix": "set by nq_v3f.py (HERE/numba_cache)"
+}

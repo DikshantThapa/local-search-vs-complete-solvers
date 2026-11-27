@@ -1,0 +1,23 @@
+{
+ "init": [
+  [
+   "array(int64, 2d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)"
+  ]
+ ],
+ "steps": [
+  [
+   "array(int64, 2d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)",
+   "array(int64, 1d, C)",
+   "float64",
+   "int64"
+  ]
+ ],
+ "all_types_identical_across_boards": true
+}
