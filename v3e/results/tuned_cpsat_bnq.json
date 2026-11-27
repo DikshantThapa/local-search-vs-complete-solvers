@@ -1,0 +1,61 @@
+{
+ "bnq": {
+  "variant": "default",
+  "params": "",
+  "table": {
+   "default": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "lin0": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "lin2": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "portfolio": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "fixed": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "sym0": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "sym2": {
+    "solved": 0,
+    "par2_sum": 60.0
+   },
+   "nopresolve": {
+    "solved": 0,
+    "par2_sum": 60.0
+   }
+  }
+ },
+ "_meta": {
+  "T_tune": 5.0,
+  "seeds": [
+   2000,
+   2001,
+   2002
+  ],
+  "cells": {
+   "bnq": [
+    [
+     100,
+     0.9
+    ],
+    [
+     100,
+     0.94
+    ]
+   ]
+  },
+  "runs_per_family": 48
+ }
+}
