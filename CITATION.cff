@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it."
+title: "Where does local search beat complete solvers? Code, pre-registrations, results and analysis"
+authors:
+  - family-names: "Thapa"
+    given-names: "Dikshant Bikram"
+    affiliation: "Kathmandu University"
+license: MIT
+repository-code: "https://github.com/DikshantThapa/local-search-vs-complete-solvers"
+keywords: ["local search", "CP-SAT", "SAT", "constraint satisfaction", "pre-registration", "n-Queens"]

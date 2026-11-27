@@ -1,0 +1,8 @@
+{
+  "title": "Where does local search beat complete solvers? Code, pre-registrations, results and analysis",
+  "upload_type": "software",
+  "description": "Code, pre-registered design notes (with commit tags), raw results and analysis scripts for a budget-controlled comparison of local search, CP-SAT and CDCL on random constraint families and a SATLIB subset.",
+  "creators": [{"name": "Thapa, Dikshant Bikram", "affiliation": "Kathmandu University"}],
+  "license": "MIT",
+  "keywords": ["local search", "CP-SAT", "SAT", "constraint satisfaction", "pre-registration", "n-Queens"]
+}

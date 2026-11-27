@@ -1,17 +1,26 @@
-# Where does local search beat complete solvers? Code, data and analysis
+# Where does local search beat complete solvers? Code, pre-registrations, results and analysis
 
-Code and raw results for the study "Where Does Local Search Beat Complete Solvers? A Pre-Specified Phase-Transition Comparison on Blocked n-Queens, Quasigroup Completion and Random 3-SAT" (author: Dikshant Bikram Thapa, Kathmandu University). An earlier short version is on Research Square (doi 10.21203/rs.3.rs-11855600/v1).
+Code, pre-registered design notes, raw results and analysis scripts for a budget-controlled comparison of local search
+(min-conflicts, WalkSAT, probSAT), CP-SAT and CDCL (CaDiCaL, Glucose) on random constraint families
+(blocked n-Queens, quasigroup with holes, quasigroup completion, random 3-SAT and 5-SAT) and on a SATLIB subset.
 
-## Files
-- `nq_v2.py`: instance generators (blocked n-queens, quasigroup with holes, quasigroup completion, random 3-SAT), solvers (min-conflicts / WalkSAT local search, CP-SAT with two encodings and a 4-worker run, glucose4, cadical195 through PySAT), independent verifier and the experiment runner (`--stage main|w4`, `--smoke`).
-- `nq_v2_cpu.ipynb`: the Kaggle notebook that ran it (4 CPU session, 10 s limit per run).
-- `DESIGN_NOTE.md`: the hypotheses H1 to H7, thresholds and analysis plan, written before the main run (not externally time-stamped).
-- `results/main.csv` (9,600 runs), `results/w4.csv` (480 runs), `results/smoke.csv` (70-run smoke test): one row per (instance, solver) run.
-- `analyze_v2.py`: analysis script. It applies the strict rule: an answer returned after the 10 s limit counts as a timeout (57 late answers were reclassified).
-- `analysis/`: tables, hypothesis checks, figures produced by the script.
+## Stages (each pre-registered by a design note committed before the run; git tags `prereg-*` mark those commits)
+| folder | content | pre-registration tag |
+|---|---|---|
+| `.` (top level) | stage v2: first study, Python local search, 10 s | not externally time-stamped |
+| `v3/` | strict-budget re-run with compiled local search (main10, long60), hypotheses H1-H8 | `prereg-v3` |
+| `v3c/` | fresh-instance confirmation (seeds 100-119), core-matched best-of-four local search, hypotheses C1-C5 | `prereg-v3c` |
+| `v3d/` | robustness: probSAT, tuned CP-SAT, 5-SAT, tabu Latin-square search, SATLIB subset, hypotheses D1-D6 | `prereg-v3d` |
+| `v3e/` | fairness: corrected warm-up, native C baseline, noise ablation, WalkSAT versus probSAT at large n, hypotheses E1-E6 | `prereg-v3e` |
+| `v3f/` | start-up diagnosis, 5-SAT sanity, slow noise-0 cell, second CP-SAT model, interpreted search on blocked n-Queens, hypotheses F1-F5 | `prereg-v3f` (results added after the run) |
+
+Each stage folder holds the design note (`DESIGN_NOTE_*.md`), the harness (`nq_v3*.py`), the analysis script (`analyze_v3*.py`) and, under `results/`,
+the raw CSVs (one row per instance and solver), environment JSON files and analysis outputs.
+`paper_analysis/` holds the scripts that produced the paper's appendix tables and figures; `diagnostics/` holds the start-up-cost diagnostics.
 
 ## Reproduce
-`pip install ortools python-sat pandas numpy matplotlib tabulate` then `python nq_v2.py out.csv --stage main --jobs 4 --T 10` and `python analyze_v2.py results/main.csv results/w4.csv --out analysis`.
+Install `ortools python-sat numba numpy pandas matplotlib scipy`, then follow the notebook of the stage (`kaggle_pack` notebooks are generated from the scripts).
+Instances are regenerated from string seeds, so no instance files are needed.
 
-## Notes
-Library versions and CPU of the original Kaggle run were not recorded. Random instances only; local search is untuned Python. Licence: MIT (code), CC BY 4.0 (result tables).
+## Licence
+Code: MIT. Result tables and design notes: CC BY 4.0. SATLIB benchmark archives are not redistributed; the notebook downloads them and records SHA-256 hashes.
